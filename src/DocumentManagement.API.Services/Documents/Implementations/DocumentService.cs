@@ -1,7 +1,7 @@
 using DocumentManagement.PublicModels.Documents;
 using FluentResults;
 
-namespace DocumentManagement.API.Services.Implementations;
+namespace DocumentManagement.API.Services.Documents.Implementations;
 
 public class DocumentService : IDocumentService
 {

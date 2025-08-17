@@ -1,6 +1,6 @@
-using DocumentManagement.API.Errors;
-using DocumentManagement.API.Services;
+using DocumentManagement.API.Services.Documents;
 using DocumentManagement.PublicModels.Documents;
+using DocumentManagement.PublicModels.Errors;
 using Microsoft.AspNetCore.Mvc;
 using FluentResults;
 

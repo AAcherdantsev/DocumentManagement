@@ -1,7 +1,7 @@
 using DocumentManagement.PublicModels.Documents;
 using FluentResults;
 
-namespace DocumentManagement.API.Services;
+namespace DocumentManagement.API.Services.Documents;
 
 /// <summary>
 /// Provides an abstraction for managing documents.

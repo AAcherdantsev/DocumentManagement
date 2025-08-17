@@ -1,5 +1,6 @@
 using DocumentManagement.API.Services.Documents;
 using DocumentManagement.Models.Documents;
+using DocumentManagement.PublicModels.Errors;
 using FluentResults;
 
 namespace DocumentManagement.Persistence.DocumentRepositories;
@@ -18,8 +19,7 @@ internal class InMemoryDocumentRepository : IDocumentRepository
         {
             return Task.FromResult(Result.Ok(document));
         }
-        
-        return Task.FromResult(Result.Fail<Document>("Document not found"));
+        return Task.FromResult(Result.Fail<Document>(new NotFoundError("Document not found")));
     }
 
     /// <inheritdoc/>
@@ -27,7 +27,7 @@ internal class InMemoryDocumentRepository : IDocumentRepository
     {
         if (_documents.ContainsKey(document.Id))
         {
-            return Task.FromResult(Result.Fail($"Document with id {document.Id} already exists"));
+            return Task.FromResult(Result.Fail(new ConflictError("Document already exists")));
         }
         _documents.Add(document.Id, document);
 
@@ -47,7 +47,6 @@ internal class InMemoryDocumentRepository : IDocumentRepository
         {
             return Task.FromResult(Result.Ok());
         }
-
-        return Task.FromResult(Result.Fail("Document not found"));
+        return Task.FromResult(Result.Fail(new NotFoundError("Document not found")));
     }
 }

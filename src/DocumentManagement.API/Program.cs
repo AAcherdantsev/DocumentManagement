@@ -1,5 +1,5 @@
-using DocumentManagement.API.Services;
-using DocumentManagement.API.Services.Implementations;
+using DocumentManagement.API.Services.Documents;
+using DocumentManagement.API.Services.Documents.Implementations;
 using DocumentManagement.Persistence.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
