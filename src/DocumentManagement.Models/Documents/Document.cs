@@ -11,7 +11,10 @@ public class Document
     /// Gets the date and time when the document was created.
     /// </summary>
     public DateTime Created { get; set; } = DateTime.UtcNow;
-    
+
+    /// <summary>
+    /// Gets or sets the date and time when the document was last updated.
+    /// </summary>
     public DateTime? LastUpdated { get; set; }
 
     /// <summary>

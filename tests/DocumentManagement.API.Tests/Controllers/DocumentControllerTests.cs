@@ -28,6 +28,7 @@ public class DocumentControllerTests
     [Test]
     public async Task GetDocument_ShouldReturnOk_WhenFound()
     {
+        // Arrange
         var dto = new DocumentDto
         {
             Id = "d1", 
@@ -40,8 +41,10 @@ public class DocumentControllerTests
         _serviceMock.Setup(s => s.GetAsync("d1", It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Ok(dto));
 
+        // Act
         var result = await _controller.GetDocument("d1");
 
+        // Assert
         Assert.That(result.Result, Is.TypeOf<OkObjectResult>());
         var ok = result.Result as OkObjectResult;
         Assert.That(ok.Value, Is.EqualTo(dto));
@@ -50,17 +53,21 @@ public class DocumentControllerTests
     [Test]
     public async Task GetDocument_ShouldReturnNotFound_WhenMissing()
     {
+        // Arrange
         _serviceMock.Setup(s => s.GetAsync("ghost", It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Fail<DocumentDto>(new NotFoundError("not found")));
 
+        // Act
         var result = await _controller.GetDocument("ghost");
 
+        // Assert
         Assert.That(result.Result, Is.TypeOf<NotFoundResult>());
     }
 
     [Test]
     public async Task AddDocument_ShouldReturnCreated_WhenSuccess()
     {
+        // Arrange
         var request = new CreateNewDocumentRequest
         {
             Id = "new1", 
@@ -70,8 +77,10 @@ public class DocumentControllerTests
         _serviceMock.Setup(s => s.AddAsync(It.IsAny<DocumentDto>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Ok());
 
+        // Act
         var result = await _controller.AddDocument(request);
 
+        // Assert
         Assert.That(result, Is.TypeOf<CreatedAtActionResult>());
         var created = result as CreatedAtActionResult;
         Assert.That(created.ActionName, Is.EqualTo(nameof(DocumentController.GetDocument)));
@@ -80,6 +89,7 @@ public class DocumentControllerTests
     [Test]
     public async Task AddDocument_ShouldReturnConflict_WhenDuplicate()
     {
+        // Arrange
         var request = new CreateNewDocumentRequest
         {
             Id = "dup", 
@@ -89,14 +99,17 @@ public class DocumentControllerTests
         _serviceMock.Setup(s => s.AddAsync(It.IsAny<DocumentDto>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Fail(new ConflictError("exists")));
 
+        // Act
         var result = await _controller.AddDocument(request);
 
+        // Assert
         Assert.That(result, Is.TypeOf<ConflictResult>());
     }
 
     [Test]
     public async Task UpdateDocument_ShouldReturnOk_WhenSuccess()
     {
+        // Arrange
         var dto = new DocumentDto
         {
             Id = "d2", 
@@ -106,14 +119,17 @@ public class DocumentControllerTests
         _serviceMock.Setup(s => s.UpdateAsync("d2", dto, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Ok());
 
+        // Act
         var result = await _controller.UpdateDocument("d2", dto);
 
+        // Assert
         Assert.That(result, Is.TypeOf<OkResult>());
     }
 
     [Test]
     public async Task UpdateDocument_ShouldReturnNotFound_WhenMissing()
     {
+        // Arrange
         var dto = new DocumentDto
         {
             Id = "nope",
@@ -123,36 +139,45 @@ public class DocumentControllerTests
         _serviceMock.Setup(s => s.UpdateAsync("nope", dto, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Fail(new NotFoundError("nope")));
 
+        // Act
         var result = await _controller.UpdateDocument("nope", dto);
 
+        // Assert
         Assert.That(result, Is.TypeOf<NotFoundResult>());
     }
 
     [Test]
     public async Task DeleteDocument_ShouldReturnNoContent_WhenSuccess()
     {
+        // Arrange
         _serviceMock.Setup(s => s.DeleteAsync("d3", It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Ok());
 
+        // Act
         var result = await _controller.DeleteDocument("d3");
 
+        // Assert
         Assert.That(result, Is.TypeOf<NoContentResult>());
     }
 
     [Test]
     public async Task DeleteDocument_ShouldReturnNotFound_WhenMissing()
     {
+        // Arrange
         _serviceMock.Setup(s => s.DeleteAsync("ghost", It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Fail(new NotFoundError("not found")));
 
+        // Act
         var result = await _controller.DeleteDocument("ghost");
 
+        // Assert
         Assert.That(result, Is.TypeOf<NotFoundResult>());
     }
 
     [Test]
     public async Task PatchDocument_ShouldReturnOk_WhenSuccess()
     {
+        // Arrange
         var request = new UpdateDocumentRequest
         {
             Id = "patch", 
@@ -161,20 +186,25 @@ public class DocumentControllerTests
         _serviceMock.Setup(s => s.UpdateAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Ok());
 
+        // Act
         var result = await _controller.PatchDocument(request);
 
+        // Assert
         Assert.That(result, Is.TypeOf<OkResult>());
     }
 
     [Test]
     public async Task PatchDocument_ShouldReturnNotFound_WhenMissing()
     {
+        // Arrange
         var request = new UpdateDocumentRequest { Id = "ghost" };
         _serviceMock.Setup(s => s.UpdateAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Fail(new NotFoundError("ghost")));
 
+        // Act
         var result = await _controller.PatchDocument(request);
 
+        // Assert
         Assert.That(result, Is.TypeOf<NotFoundResult>());
     }
 }

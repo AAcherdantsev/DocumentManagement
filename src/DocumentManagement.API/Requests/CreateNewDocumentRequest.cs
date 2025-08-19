@@ -1,7 +1,8 @@
-using System.Collections.Frozen;
-
 namespace DocumentManagement.API.Requests;
 
+/// <summary>
+/// Represents a request to create a new document in the document management system.
+/// </summary>
 public class CreateNewDocumentRequest
 {
     /// <summary>

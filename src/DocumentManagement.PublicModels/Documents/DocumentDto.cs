@@ -1,5 +1,3 @@
-using System.Collections.Frozen;
-
 namespace DocumentManagement.PublicModels.Documents;
 
 /// <summary>

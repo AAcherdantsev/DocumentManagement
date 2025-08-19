@@ -160,7 +160,12 @@ public class DocumentController : ControllerBase
         
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
-    
+
+    /// <summary>
+    /// Updates an existing document with the given data.
+    /// </summary>
+    /// <param name="request">The request.</param>
+    /// <returns>Returns an HTTP response indicating the result of the update operation.</returns>
     [HttpPatch]
     public async Task<ActionResult> PatchDocument([FromBody] UpdateDocumentRequest request)
     {

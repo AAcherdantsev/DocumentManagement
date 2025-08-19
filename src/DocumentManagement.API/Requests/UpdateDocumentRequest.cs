@@ -1,5 +1,8 @@
 namespace DocumentManagement.API.Requests;
 
+/// <summary>
+/// Represents a request to update a document's data or tags in the system.
+/// </summary>
 public class UpdateDocumentRequest
 {
     /// <summary>
