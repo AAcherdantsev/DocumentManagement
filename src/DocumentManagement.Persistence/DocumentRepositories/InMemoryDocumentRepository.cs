@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using DocumentManagement.Models.Documents;
 using DocumentManagement.PublicModels.Errors;
 using FluentResults;

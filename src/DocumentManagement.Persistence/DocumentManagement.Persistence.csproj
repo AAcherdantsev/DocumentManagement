@@ -16,4 +16,9 @@
       <ProjectReference Include="..\DocumentManagement.PublicModels\DocumentManagement.PublicModels.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>DocumentManagement.Persistence.Tests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 </Project>
