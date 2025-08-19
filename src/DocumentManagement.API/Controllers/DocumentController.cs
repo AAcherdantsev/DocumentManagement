@@ -84,31 +84,6 @@ public class DocumentController : ControllerBase
     }
 
     /// <summary>
-    /// Updates an existing document with the provided data.
-    /// </summary>
-    /// <param name="id">The unique identifier of the document to be updated.</param>
-    /// <param name="document">The updated document data.</param>
-    /// <returns>An <see cref="ActionResult"/> indicating the outcome of the operation.</returns>
-    [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateDocumentAsync([FromRoute] string id, [FromBody] DocumentDto document)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-        
-        _logger.LogInformation("Updating document with id {id}...", document.Id);
-        
-        var result = await _documentService.UpdateAsync(id, document);
-        
-        if (result.IsSuccess)
-        {
-            _logger.LogInformation("Document with id {id} updated successfully.", document.Id);
-            return Ok();
-        }
-        
-        return HandleError(result, id);
-    }
-
-    /// <summary>
     /// Deletes a document by its unique identifier.
     /// </summary>
     /// <param name="id">The unique identifier of the document to delete.</param>

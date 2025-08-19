@@ -107,46 +107,6 @@ public class DocumentControllerTests
     }
 
     [Test]
-    public async Task UpdateDocument_ShouldReturnOk_WhenSuccess()
-    {
-        // Arrange
-        var dto = new DocumentDto
-        {
-            Id = "d2", 
-            Tags = [], 
-            Data = [],
-        };
-        _serviceMock.Setup(s => s.UpdateAsync("d2", dto, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result.Ok());
-
-        // Act
-        var result = await _controller.UpdateDocumentAsync("d2", dto);
-
-        // Assert
-        Assert.That(result, Is.TypeOf<OkResult>());
-    }
-
-    [Test]
-    public async Task UpdateDocument_ShouldReturnNotFound_WhenMissing()
-    {
-        // Arrange
-        var dto = new DocumentDto
-        {
-            Id = "nope",
-            Tags = [], 
-            Data = [],
-        };
-        _serviceMock.Setup(s => s.UpdateAsync("nope", dto, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result.Fail(new NotFoundError("nope")));
-
-        // Act
-        var result = await _controller.UpdateDocumentAsync("nope", dto);
-
-        // Assert
-        Assert.That(result, Is.TypeOf<NotFoundResult>());
-    }
-
-    [Test]
     public async Task DeleteDocument_ShouldReturnNoContent_WhenSuccess()
     {
         // Arrange
