@@ -5,6 +5,7 @@ using DocumentManagement.PublicModels.Documents;
 using DocumentManagement.PublicModels.Errors;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -22,7 +23,8 @@ public class DocumentControllerTests
     {
         _serviceMock = new Mock<IDocumentService>();
         _loggerMock = new Mock<ILogger<DocumentController>>();
-        _controller = new DocumentController(_serviceMock.Object, _loggerMock.Object);
+        var cache = new MemoryCache(new MemoryCacheOptions());
+        _controller = new DocumentController(_serviceMock.Object, cache, _loggerMock.Object);
     }
 
     [Test]
@@ -83,7 +85,7 @@ public class DocumentControllerTests
         // Assert
         Assert.That(result, Is.TypeOf<CreatedAtActionResult>());
         var created = result as CreatedAtActionResult;
-        Assert.That(created.ActionName, Is.EqualTo(nameof(DocumentController.GetDocumentAsync)));
+        Assert.That(created.ActionName, Is.EqualTo("GetDocument"));
     }
 
     [Test]

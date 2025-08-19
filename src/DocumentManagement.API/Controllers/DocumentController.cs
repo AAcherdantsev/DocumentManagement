@@ -4,6 +4,7 @@ using DocumentManagement.PublicModels.Documents;
 using DocumentManagement.PublicModels.Errors;
 using Microsoft.AspNetCore.Mvc;
 using FluentResults;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace DocumentManagement.API.Controllers;
 
@@ -18,14 +19,17 @@ public class DocumentController : ControllerBase
 {
     private readonly IDocumentService _documentService;
     private readonly ILogger<DocumentController> _logger;
+    private readonly IMemoryCache _cache;
     
     /// <summary>
     /// Creates a new instance of the <see cref="DocumentController"/> class.
     /// </summary>
     /// <param name="documentService">The document service.</param>
+    /// <param name="cache">The cache.</param>
     /// <param name="logger">The logger.</param>
-    public DocumentController(IDocumentService documentService, ILogger<DocumentController> logger)
+    public DocumentController(IDocumentService documentService, IMemoryCache cache, ILogger<DocumentController> logger)
     {
+        _cache = cache;
         _logger = logger;
         _documentService = documentService;
     }
@@ -39,9 +43,20 @@ public class DocumentController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<DocumentDto>> GetDocumentAsync(string id)
     {
+        if (_cache.TryGetValue<DocumentDto>(id, out var cachedDoc))
+        {
+            if (cachedDoc == null)
+                return NotFound();
+            
+            _logger.LogInformation("Returning cached document {id}", id);
+            return Ok(cachedDoc);
+        }
         _logger.LogInformation("Getting document with id {id}...", id);
         
         var result = await _documentService.GetAsync(id);
+        
+        _cache.Set(id, result.IsSuccess ? result.Value : null);
+        
         if (result.IsSuccess)
         {
             return Ok(result.Value);
@@ -73,11 +88,21 @@ public class DocumentController : ControllerBase
         };
 
         var result = await _documentService.AddAsync(document);
-
+        
         if (result.IsSuccess)
         {
+            if (_cache.TryGetValue<DocumentDto>(document.Id, out _))
+            {
+                _cache.Set(document.Id, document);
+            }
+            
             _logger.LogInformation("Document with id {id} added successfully.", request.Id);
-            return CreatedAtAction(nameof(GetDocumentAsync), new { id = request.Id }, null);
+            
+            return CreatedAtAction(
+                "GetDocument", 
+                new { id = request.Id }, 
+                document
+            );
         }
         
         return HandleError(result, request.Id);
@@ -97,13 +122,43 @@ public class DocumentController : ControllerBase
 
         if (result.IsSuccess)
         {
+            if (_cache.TryGetValue<DocumentDto>(id, out _))
+            {
+                _cache.Set<DocumentDto>(id, null!);
+            }
+            
             _logger.LogInformation("Document with id {id} deleted successfully.", id);
             return NoContent();
         }
         
         return HandleError(result, id);
     }
-
+    
+    /// <summary>
+    /// Updates an existing document with the given data.
+    /// </summary>
+    /// <param name="request">The request.</param>
+    /// <returns>Returns an HTTP response indicating the result of the update operation.</returns>
+    [HttpPatch]
+    public async Task<ActionResult> PatchDocumentAsync([FromBody] UpdateDocumentRequest request)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
+        _logger.LogInformation("Updating document with id {id}...", request.Id);
+        
+        var result = await _documentService.UpdateAsync(request);
+        
+        if (result.IsSuccess)
+        {
+            _cache.Remove(request.Id);
+            _logger.LogInformation("Document with id {id} updated successfully.", request.Id);
+            return Ok();
+        }
+        
+        return HandleError(result, request.Id);
+    }
+    
     /// <summary>
     /// Handles errors encountered during document operations and returns the appropriate HTTP response.
     /// </summary>
@@ -134,29 +189,5 @@ public class DocumentController : ControllerBase
             id, string.Join(", ", result.Errors));
         
         return StatusCode(StatusCodes.Status500InternalServerError);
-    }
-
-    /// <summary>
-    /// Updates an existing document with the given data.
-    /// </summary>
-    /// <param name="request">The request.</param>
-    /// <returns>Returns an HTTP response indicating the result of the update operation.</returns>
-    [HttpPatch]
-    public async Task<ActionResult> PatchDocumentAsync([FromBody] UpdateDocumentRequest request)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-        
-        _logger.LogInformation("Updating document with id {id}...", request.Id);
-        
-        var result = await _documentService.UpdateAsync(request);
-        
-        if (result.IsSuccess)
-        {
-            _logger.LogInformation("Document with id {id} updated successfully.", request.Id);
-            return Ok();
-        }
-        
-        return HandleError(result, request.Id);
     }
 }

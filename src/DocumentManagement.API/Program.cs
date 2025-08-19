@@ -27,6 +27,7 @@ builder.Services
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddSwaggerGen();
 builder.Services.AddInMemoryDocumentRepository();
+builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<IDocumentService, DocumentService>();
 
 var app = builder.Build();
