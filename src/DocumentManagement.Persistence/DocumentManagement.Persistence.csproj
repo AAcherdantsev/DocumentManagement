@@ -7,11 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DocumentManagement.API.Services\DocumentManagement.API.Services.csproj" />
+      <PackageReference Include="FluentResults" Version="4.0.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+      <ProjectReference Include="..\DocumentManagement.Models\DocumentManagement.Models.csproj" />
+      <ProjectReference Include="..\DocumentManagement.PublicModels\DocumentManagement.PublicModels.csproj" />
     </ItemGroup>
 
 </Project>

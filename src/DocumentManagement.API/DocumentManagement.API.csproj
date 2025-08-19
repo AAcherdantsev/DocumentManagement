@@ -7,7 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="FluentResults" Version="4.0.0" />
+        <PackageReference Include="MessagePack.AspNetCoreMvcFormatter" Version="3.1.4" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.19"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
     </ItemGroup>
@@ -16,6 +18,10 @@
       <ProjectReference Include="..\DocumentManagement.Models\DocumentManagement.Models.csproj" />
       <ProjectReference Include="..\DocumentManagement.Persistence\DocumentManagement.Persistence.csproj" />
       <ProjectReference Include="..\DocumentManagement.PublicModels\DocumentManagement.PublicModels.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Services\" />
     </ItemGroup>
 
 </Project>

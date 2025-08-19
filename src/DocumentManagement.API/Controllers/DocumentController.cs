@@ -1,3 +1,4 @@
+using DocumentManagement.API.Requests;
 using DocumentManagement.API.Services.Documents;
 using DocumentManagement.PublicModels.Documents;
 using DocumentManagement.PublicModels.Errors;
@@ -11,6 +12,8 @@ namespace DocumentManagement.API.Controllers;
 /// </summary>
 [ApiController]
 [Route("documents")]
+[Produces("application/json", "application/xml", "application/x-msgpack")]
+[Consumes("application/json", "application/xml", "application/x-msgpack")]
 public class DocumentController : ControllerBase
 {
     private readonly IDocumentService _documentService;
@@ -49,26 +52,35 @@ public class DocumentController : ControllerBase
     /// <summary>
     /// Adds a new document to the document management system.
     /// </summary>
-    /// <param name="document">The <see cref="DocumentDto"/> representing the document to be added.</param>
+    /// <param name="request">The <see cref="CreateNewDocumentRequest"/> representing the document to be added.</param>
     /// <returns>A <see cref="Task{ActionResult}"/> representing the result of the operation,
     /// such as a success message or an error response.</returns>
     [HttpPost]
-    public async Task<ActionResult> AddDocument([FromBody] DocumentDto document)
+    public async Task<ActionResult> AddDocument([FromBody] CreateNewDocumentRequest request)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
         
-        _logger.LogInformation("Adding document with id {id}...", document.Id);
-        
+        _logger.LogInformation("Adding document with id {id}...", request.Id);
+
+        var document = new DocumentDto()
+        {
+            Id = request.Id,
+            Data = request.Data,
+            Tags = request.Tags,
+            Created = DateTime.UtcNow,
+            LastUpdated = DateTime.UtcNow,
+        };
+
         var result = await _documentService.AddAsync(document);
 
         if (result.IsSuccess)
         {
-            _logger.LogInformation("Document with id {id} added successfully.", document.Id);
-            return CreatedAtAction(nameof(GetDocument), new { id = document.Id }, document);
+            _logger.LogInformation("Document with id {id} added successfully.", request.Id);
+            return CreatedAtAction(nameof(GetDocument), new { id = request.Id }, null);
         }
         
-        return HandleError(result, document.Id);
+        return HandleError(result, request.Id);
     }
 
     /// <summary>
@@ -147,5 +159,24 @@ public class DocumentController : ControllerBase
             id, string.Join(", ", result.Errors));
         
         return StatusCode(StatusCodes.Status500InternalServerError);
+    }
+    
+    [HttpPatch]
+    public async Task<ActionResult> PatchDocument([FromBody] UpdateDocumentRequest request)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
+        _logger.LogInformation("Updating document with id {id}...", request.Id);
+        
+        var result = await _documentService.UpdateAsync(request);
+        
+        if (result.IsSuccess)
+        {
+            _logger.LogInformation("Document with id {id} updated successfully.", request.Id);
+            return Ok();
+        }
+        
+        return HandleError(result, request.Id);
     }
 }

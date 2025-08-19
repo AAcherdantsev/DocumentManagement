@@ -1,3 +1,5 @@
+using System.Collections.Frozen;
+
 namespace DocumentManagement.Models.Documents;
 
 /// <summary>
@@ -8,17 +10,19 @@ public class Document
     /// <summary>
     /// Gets the date and time when the document was created.
     /// </summary>
-    public DateTime Created { get; init; } = DateTime.UtcNow;
+    public DateTime Created { get; set; } = DateTime.UtcNow;
+    
+    public DateTime? LastUpdated { get; set; }
 
     /// <summary>
     /// Gets the key-value pairs representing the associated data for the document.
     /// </summary>
-    public required IDictionary<string, string> Data { get; init; }
+    public required Dictionary<string, string> Data { get; set; }
 
     /// <summary>
     /// Gets the collection of tags associated with the document.
     /// </summary>
-    public required IReadOnlySet<string> Tags { get; init; }
+    public required HashSet<string> Tags { get; set; }
 
     /// <summary>
     /// Gets the unique identifier of the document.

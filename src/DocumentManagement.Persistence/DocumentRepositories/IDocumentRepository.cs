@@ -1,7 +1,7 @@
 using DocumentManagement.Models.Documents;
 using FluentResults;
 
-namespace DocumentManagement.API.Services.Documents;
+namespace DocumentManagement.Persistence.DocumentRepositories;
 
 /// <summary>
 /// Defines a contract for repository operations related to document management.

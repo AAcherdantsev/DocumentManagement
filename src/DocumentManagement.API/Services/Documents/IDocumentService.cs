@@ -1,3 +1,4 @@
+using DocumentManagement.API.Requests;
 using DocumentManagement.PublicModels.Documents;
 using FluentResults;
 
@@ -40,4 +41,7 @@ public interface IDocumentService
     /// <param name="ct">A <see cref="CancellationToken"/> used to observe cancellation requests.</param>
     /// <returns>A <see cref="Result"/> indicating success or failure of the update operation.</returns>
     Task<Result> UpdateAsync(string id, DocumentDto newDocument, CancellationToken ct = default);
+    
+    
+    Task<Result> UpdateAsync(UpdateDocumentRequest request, CancellationToken ct = default);
 }
