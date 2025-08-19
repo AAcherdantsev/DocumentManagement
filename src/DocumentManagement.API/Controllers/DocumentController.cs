@@ -37,7 +37,7 @@ public class DocumentController : ControllerBase
     /// <returns>Returns an <see cref="ActionResult{T}"/> containing a <see cref="DocumentDto"/>
     /// if the operation is successful; otherwise, an appropriate error response.</returns>
     [HttpGet("{id}")]
-    public async Task<ActionResult<DocumentDto>> GetDocument(string id)
+    public async Task<ActionResult<DocumentDto>> GetDocumentAsync(string id)
     {
         _logger.LogInformation("Getting document with id {id}...", id);
         
@@ -56,7 +56,7 @@ public class DocumentController : ControllerBase
     /// <returns>A <see cref="Task{ActionResult}"/> representing the result of the operation,
     /// such as a success message or an error response.</returns>
     [HttpPost]
-    public async Task<ActionResult> AddDocument([FromBody] CreateNewDocumentRequest request)
+    public async Task<ActionResult> AddDocumentAsync([FromBody] CreateNewDocumentRequest request)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -77,7 +77,7 @@ public class DocumentController : ControllerBase
         if (result.IsSuccess)
         {
             _logger.LogInformation("Document with id {id} added successfully.", request.Id);
-            return CreatedAtAction(nameof(GetDocument), new { id = request.Id }, null);
+            return CreatedAtAction(nameof(GetDocumentAsync), new { id = request.Id }, null);
         }
         
         return HandleError(result, request.Id);
@@ -90,7 +90,7 @@ public class DocumentController : ControllerBase
     /// <param name="document">The updated document data.</param>
     /// <returns>An <see cref="ActionResult"/> indicating the outcome of the operation.</returns>
     [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateDocument([FromRoute] string id, [FromBody] DocumentDto document)
+    public async Task<ActionResult> UpdateDocumentAsync([FromRoute] string id, [FromBody] DocumentDto document)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -114,7 +114,7 @@ public class DocumentController : ControllerBase
     /// <param name="id">The unique identifier of the document to delete.</param>
     /// <returns>An <see cref="ActionResult"/> indicating the result of the deletion operation.</returns>
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteDocument(string id)
+    public async Task<ActionResult> DeleteDocumentAsync(string id)
     {
         _logger.LogInformation("Deleting document with id {id}...", id);
         
@@ -167,7 +167,7 @@ public class DocumentController : ControllerBase
     /// <param name="request">The request.</param>
     /// <returns>Returns an HTTP response indicating the result of the update operation.</returns>
     [HttpPatch]
-    public async Task<ActionResult> PatchDocument([FromBody] UpdateDocumentRequest request)
+    public async Task<ActionResult> PatchDocumentAsync([FromBody] UpdateDocumentRequest request)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);

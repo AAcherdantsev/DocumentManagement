@@ -42,7 +42,7 @@ public class DocumentControllerTests
             .ReturnsAsync(Result.Ok(dto));
 
         // Act
-        var result = await _controller.GetDocument("d1");
+        var result = await _controller.GetDocumentAsync("d1");
 
         // Assert
         Assert.That(result.Result, Is.TypeOf<OkObjectResult>());
@@ -58,7 +58,7 @@ public class DocumentControllerTests
             .ReturnsAsync(Result.Fail<DocumentDto>(new NotFoundError("not found")));
 
         // Act
-        var result = await _controller.GetDocument("ghost");
+        var result = await _controller.GetDocumentAsync("ghost");
 
         // Assert
         Assert.That(result.Result, Is.TypeOf<NotFoundResult>());
@@ -78,12 +78,12 @@ public class DocumentControllerTests
             .ReturnsAsync(Result.Ok());
 
         // Act
-        var result = await _controller.AddDocument(request);
+        var result = await _controller.AddDocumentAsync(request);
 
         // Assert
         Assert.That(result, Is.TypeOf<CreatedAtActionResult>());
         var created = result as CreatedAtActionResult;
-        Assert.That(created.ActionName, Is.EqualTo(nameof(DocumentController.GetDocument)));
+        Assert.That(created.ActionName, Is.EqualTo(nameof(DocumentController.GetDocumentAsync)));
     }
 
     [Test]
@@ -100,7 +100,7 @@ public class DocumentControllerTests
             .ReturnsAsync(Result.Fail(new ConflictError("exists")));
 
         // Act
-        var result = await _controller.AddDocument(request);
+        var result = await _controller.AddDocumentAsync(request);
 
         // Assert
         Assert.That(result, Is.TypeOf<ConflictResult>());
@@ -120,7 +120,7 @@ public class DocumentControllerTests
             .ReturnsAsync(Result.Ok());
 
         // Act
-        var result = await _controller.UpdateDocument("d2", dto);
+        var result = await _controller.UpdateDocumentAsync("d2", dto);
 
         // Assert
         Assert.That(result, Is.TypeOf<OkResult>());
@@ -140,7 +140,7 @@ public class DocumentControllerTests
             .ReturnsAsync(Result.Fail(new NotFoundError("nope")));
 
         // Act
-        var result = await _controller.UpdateDocument("nope", dto);
+        var result = await _controller.UpdateDocumentAsync("nope", dto);
 
         // Assert
         Assert.That(result, Is.TypeOf<NotFoundResult>());
@@ -154,7 +154,7 @@ public class DocumentControllerTests
             .ReturnsAsync(Result.Ok());
 
         // Act
-        var result = await _controller.DeleteDocument("d3");
+        var result = await _controller.DeleteDocumentAsync("d3");
 
         // Assert
         Assert.That(result, Is.TypeOf<NoContentResult>());
@@ -168,7 +168,7 @@ public class DocumentControllerTests
             .ReturnsAsync(Result.Fail(new NotFoundError("not found")));
 
         // Act
-        var result = await _controller.DeleteDocument("ghost");
+        var result = await _controller.DeleteDocumentAsync("ghost");
 
         // Assert
         Assert.That(result, Is.TypeOf<NotFoundResult>());
@@ -187,7 +187,7 @@ public class DocumentControllerTests
             .ReturnsAsync(Result.Ok());
 
         // Act
-        var result = await _controller.PatchDocument(request);
+        var result = await _controller.PatchDocumentAsync(request);
 
         // Assert
         Assert.That(result, Is.TypeOf<OkResult>());
@@ -202,7 +202,7 @@ public class DocumentControllerTests
             .ReturnsAsync(Result.Fail(new NotFoundError("ghost")));
 
         // Act
-        var result = await _controller.PatchDocument(request);
+        var result = await _controller.PatchDocumentAsync(request);
 
         // Assert
         Assert.That(result, Is.TypeOf<NotFoundResult>());
