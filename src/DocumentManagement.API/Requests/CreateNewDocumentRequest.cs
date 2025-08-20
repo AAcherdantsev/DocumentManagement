@@ -1,22 +1,51 @@
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
+using MessagePack;
+
 namespace DocumentManagement.API.Requests;
 
 /// <summary>
-/// Represents a request to create a new document in the document management system.
+/// Represents a request to create a new document.
 /// </summary>
+[MessagePackObject]
+[XmlRoot("CreateNewDocumentRequest")]
 public class CreateNewDocumentRequest
 {
     /// <summary>
-    /// Gets the key-value pairs representing the associated data for the document.
+    /// Gets or initializes the unique identifier for the document.
     /// </summary>
-    public required Dictionary<string, string> Data { get; init; } 
-
-    /// <summary>
-    /// Gets the collection of tags associated with the document.
-    /// </summary>
-    public required HashSet<string> Tags { get; init; }
-
-    /// <summary>
-    /// Gets the unique identifier of the document.
-    /// </summary>
+    [Key(0)]
+    [XmlElement("Id")]
     public required string Id { get; init; }
+
+    /// <summary>
+    /// Gets or initializes the date and time when the document was created.
+    /// </summary>
+    [Key(1)]
+    [XmlElement("Created")]
+    public required DateTime Created { get; init; }
+
+    /// <summary>
+    /// Gets or initializes the list of tags associated with the document.
+    /// </summary>
+    [Key(2)]
+    [XmlArray("Tags")]
+    [XmlArrayItem("Tag")]
+    public required List<string> Tags { get; init; }
+
+    /// <summary>
+    /// Gets or sets the collection of key-value pairs representing additional data associated with the document.
+    /// </summary>
+    [Key(3)]
+    [XmlIgnore]
+    public Dictionary<string, string> Data { get; set; } = [];
+
+    /// <summary>
+    /// Represents a collection of key-value entries to store additional data for the document.
+    /// </summary>
+    [XmlArray("Data")]
+    [XmlArrayItem("Entry")]
+    [IgnoreMember]
+    [JsonIgnore]
+    public List<KeyValueEntry> DataList { get; set; } = [];
 }

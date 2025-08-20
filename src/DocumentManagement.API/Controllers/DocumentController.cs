@@ -1,10 +1,12 @@
 using DocumentManagement.API.Requests;
 using DocumentManagement.API.Services.Documents;
+using DocumentManagement.API.Swagger;
 using DocumentManagement.PublicModels.Documents;
 using DocumentManagement.PublicModels.Errors;
 using Microsoft.AspNetCore.Mvc;
 using FluentResults;
 using Microsoft.Extensions.Caching.Memory;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace DocumentManagement.API.Controllers;
 
@@ -71,19 +73,36 @@ public class DocumentController : ControllerBase
     /// <returns>A <see cref="Task{ActionResult}"/> representing the result of the operation,
     /// such as a success message or an error response.</returns>
     [HttpPost]
+    [SwaggerRequestExample(typeof(CreateNewDocumentRequest), typeof(CreateNewDocumentRequestExample))]
     public async Task<ActionResult> AddDocumentAsync([FromBody] CreateNewDocumentRequest request)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
         
         _logger.LogInformation("Adding document with id {id}...", request.Id);
+        
+        var tagCount = request.Tags.Count;
 
-        var document = new DocumentDto()
+        if (tagCount != request.Tags.Distinct().Count())
+        {
+            return BadRequest("Duplicate tags are not allowed.");       
+        }
+
+        if (request.DataList.Count != 0 &&
+            request.DataList.Select(x => x.Key).Distinct().Count() != request.DataList.Count)
+        {
+            return BadRequest("Duplicate keys are not allowed.");       
+        }
+        
+        var document = new DocumentDto
         {
             Id = request.Id,
-            Data = request.Data,
+            Data = request.Data.Count == 0 
+                ? request.DataList.ToDictionary(x => x.Key, x => x.Value) 
+                : request.Data,
+            
             Tags = request.Tags,
-            Created = DateTime.UtcNow,
+            Created = request.Created,
             LastUpdated = DateTime.UtcNow,
         };
 

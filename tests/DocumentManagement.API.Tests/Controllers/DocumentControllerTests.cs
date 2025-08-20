@@ -74,7 +74,8 @@ public class DocumentControllerTests
         {
             Id = "new1", 
             Tags = [ "t" ], 
-            Data = []
+            Data = [],
+            Created = DateTime.UtcNow
         };
         _serviceMock.Setup(s => s.AddAsync(It.IsAny<DocumentDto>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Ok());
@@ -96,7 +97,8 @@ public class DocumentControllerTests
         {
             Id = "dup", 
             Tags = [], 
-            Data = []
+            Data = [],
+            Created = DateTime.UtcNow
         };
         _serviceMock.Setup(s => s.AddAsync(It.IsAny<DocumentDto>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Fail(new ConflictError("exists")));

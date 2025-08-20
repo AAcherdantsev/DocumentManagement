@@ -44,10 +44,6 @@ public class DocumentService : IDocumentService
     public async Task<Result> AddAsync(DocumentDto document, CancellationToken ct = default)
     {
         var documentModel = _mapper.Map<Document>(document);
-        
-        documentModel.Created = DateTime.UtcNow;
-        documentModel.LastUpdated = DateTime.UtcNow;
-        
         var result = await _documentRepository.AddAsync(documentModel, ct);
         return result;
     }
@@ -73,10 +69,13 @@ public class DocumentService : IDocumentService
             {
                 document.Data = request.NewData;
             }
-            
+            if (request.NewDataList != null)
+            {
+                document.Data = request.NewDataList.ToDictionary(x => x.Key, x => x.Value);
+            }
             if (request.NewTags != null)
             {
-                document.Tags = request.NewTags;
+                document.Tags = request.NewTags.ToHashSet();
             }
             
             return await _documentRepository.UpdateAsync(document.Id, document, ct);

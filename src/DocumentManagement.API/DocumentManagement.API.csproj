@@ -8,10 +8,12 @@
 
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="13.0.1" />
+        <PackageReference Include="Byndyusoft.AspNetCore.Mvc.Formatters.MessagePack" Version="0.4.0" />
         <PackageReference Include="FluentResults" Version="4.0.0" />
         <PackageReference Include="MessagePack.AspNetCoreMvcFormatter" Version="3.1.4" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.19"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
+        <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.3" />
     </ItemGroup>
 
     <ItemGroup>
@@ -23,5 +25,10 @@
     <ItemGroup>
       <Folder Include="Services\" />
     </ItemGroup>
+
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
 
 </Project>
